@@ -5,8 +5,17 @@ import 'package:intl/intl.dart';
 
 final formatCurrency = NumberFormat.currency(locale: 'pt_BR', symbol: '\$');
 
-class ProfissaoCard extends StatelessWidget {
+class ProfissaoCard extends StatefulWidget {
   const ProfissaoCard({super.key});
+
+  @override
+  State<ProfissaoCard> createState() => _ProfissaoCardState();
+}
+
+class _ProfissaoCardState extends State<ProfissaoCard> {
+  int _atual = 0;
+
+  dynamic _profissaoSelecionada = {};
 
   @override
   Widget build(BuildContext context) {
@@ -24,20 +33,37 @@ class ProfissaoCard extends StatelessWidget {
         items: _profissoes.map((prof) {
           return Builder(builder: (context) {
             return GestureDetector(
-              onTap: () {},
+              onTap: () {
+                setState(() {
+                  if (_profissaoSelecionada == prof)
+                    _profissaoSelecionada = {};
+                  else
+                    _profissaoSelecionada = prof;
+                });
+              },
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 100),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      blurRadius: 20,
-                      offset: const Offset(0, 5),
-                    )
-                  ],
+                  border: _profissaoSelecionada == prof
+                      ? Border.all(color: Colors.amber, width: 3)
+                      : null,
+                  boxShadow: _profissaoSelecionada == prof
+                      ? [
+                          BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 10,
+                              offset: Offset(0, 10))
+                        ]
+                      : [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            blurRadius: 20,
+                            offset: const Offset(0, 5),
+                          )
+                        ],
                 ),
                 child: SingleChildScrollView(
                   child: Column(
@@ -47,7 +73,7 @@ class ProfissaoCard extends StatelessWidget {
                         clipBehavior: Clip.hardEdge,
                         margin: const EdgeInsets.only(top: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         child: Image.network(
                           prof.imageUrl,
